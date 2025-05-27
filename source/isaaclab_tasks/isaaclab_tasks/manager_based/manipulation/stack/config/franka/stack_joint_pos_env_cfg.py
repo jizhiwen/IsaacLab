@@ -32,7 +32,7 @@ class EventCfg:
         func=franka_stack_events.set_default_joint_pose,
         mode="startup",
         params={
-            "default_pose": [0.0444, -0.1894, -0.1107, -2.5148, 0.0044, 2.3775, 0.6952, 0.0400, 0.0400],
+            "default_pose": [1.42, 0.76, 1.12, 0.06, 0.82, -0.20, 0.0, 0.0],
         },
     )
 
