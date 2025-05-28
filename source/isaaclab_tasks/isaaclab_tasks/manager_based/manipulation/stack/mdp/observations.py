@@ -283,12 +283,21 @@ def object_grasped(
     end_effector_pos = ee_frame.data.target_pos_w[:, 0, :]
     pose_diff = torch.linalg.vector_norm(object_pos - end_effector_pos, dim=1)
 
-    grasped = torch.logical_and(
-        pose_diff < diff_threshold,
+    # grasped = torch.logical_and(
+    #     pose_diff < diff_threshold,
+    #     torch.abs(robot.data.joint_pos[:, -1] - gripper_open_val.to(env.device)) > gripper_threshold,
+    # )
+    # grasped = torch.logical_and(
+    #     grasped, torch.abs(robot.data.joint_pos[:, -2] - gripper_open_val.to(env.device)) > gripper_threshold
+    # )
+
+    grasped = torch.logical_or(
         torch.abs(robot.data.joint_pos[:, -1] - gripper_open_val.to(env.device)) > gripper_threshold,
+        torch.abs(robot.data.joint_pos[:, -2] - gripper_open_val.to(env.device)) > gripper_threshold
     )
     grasped = torch.logical_and(
-        grasped, torch.abs(robot.data.joint_pos[:, -2] - gripper_open_val.to(env.device)) > gripper_threshold
+        pose_diff < diff_threshold,
+        grasped
     )
 
     return grasped

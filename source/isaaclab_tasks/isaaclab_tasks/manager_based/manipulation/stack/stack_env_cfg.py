@@ -21,6 +21,7 @@ from isaaclab.utils.assets import ISAAC_NUCLEUS_DIR
 
 from . import mdp
 
+import torch
 
 ##
 # Scene definition
@@ -110,6 +111,9 @@ class ObservationsCfg:
                 "robot_cfg": SceneEntityCfg("robot"),
                 "ee_frame_cfg": SceneEntityCfg("ee_frame"),
                 "object_cfg": SceneEntityCfg("cube_2"),
+                "gripper_open_val": torch.tensor([0.0]),
+                "gripper_threshold": 0.005,
+                "diff_threshold": 0.05,
             },
         )
         stack_1 = ObsTerm(
@@ -118,6 +122,7 @@ class ObservationsCfg:
                 "robot_cfg": SceneEntityCfg("robot"),
                 "upper_object_cfg": SceneEntityCfg("cube_2"),
                 "lower_object_cfg": SceneEntityCfg("cube_1"),
+                "gripper_open_val": torch.tensor([0.0]),
             },
         )
         grasp_2 = ObsTerm(
@@ -126,6 +131,9 @@ class ObservationsCfg:
                 "robot_cfg": SceneEntityCfg("robot"),
                 "ee_frame_cfg": SceneEntityCfg("ee_frame"),
                 "object_cfg": SceneEntityCfg("cube_3"),
+                "gripper_open_val": torch.tensor([0.0]),
+                "gripper_threshold": 0.005,
+                "diff_threshold": 0.05,
             },
         )
 
@@ -157,7 +165,7 @@ class TerminationsCfg:
         func=mdp.root_height_below_minimum, params={"minimum_height": -0.05, "asset_cfg": SceneEntityCfg("cube_3")}
     )
 
-    success = DoneTerm(func=mdp.cubes_stacked)
+    success = DoneTerm(func=mdp.cubes_stacked, params={"gripper_open_val": torch.tensor([0.0])})
 
 
 @configclass
