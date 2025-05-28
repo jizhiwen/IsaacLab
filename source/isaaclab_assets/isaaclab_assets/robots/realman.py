@@ -80,7 +80,7 @@ REALMAN_HIGH_PD_CFG.actuators["realman_shoulder"].stiffness = 1047.2
 REALMAN_HIGH_PD_CFG.actuators["realman_shoulder"].damping = 80.0
 REALMAN_HIGH_PD_CFG.actuators["realman_forearm"].stiffness = 1047.2
 REALMAN_HIGH_PD_CFG.actuators["realman_forearm"].damping = 80.0
-REALMAN_HIGH_PD_CFG.actuators["realman_hand"].stiffness = 500
+REALMAN_HIGH_PD_CFG.actuators["realman_hand"].stiffness = 1047.2
 REALMAN_HIGH_PD_CFG.actuators["realman_hand"].damping = 80.0
 """Configuration of Franka Emika Panda robot with stiffer PD control.
 

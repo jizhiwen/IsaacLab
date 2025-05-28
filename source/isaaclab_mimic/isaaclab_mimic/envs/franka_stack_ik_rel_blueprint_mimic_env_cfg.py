@@ -49,7 +49,7 @@ class FrankaCubeStackIKRelBlueprintMimicEnvCfg(FrankaCubeStackBlueprintEnvCfg, M
                 # Optional parameters for the selection strategy function
                 selection_strategy_kwargs={"nn_k": 3},
                 # Amount of action noise to apply during this subtask
-                action_noise=0.03,
+                action_noise=0.01,
                 # Number of interpolation steps to bridge to this subtask segment
                 num_interpolation_steps=5,
                 # Additional fixed steps for the robot to reach the necessary pose
@@ -71,7 +71,7 @@ class FrankaCubeStackIKRelBlueprintMimicEnvCfg(FrankaCubeStackBlueprintEnvCfg, M
                 # Optional parameters for the selection strategy function
                 selection_strategy_kwargs={"nn_k": 3},
                 # Amount of action noise to apply during this subtask
-                action_noise=0.03,
+                action_noise=0.01,
                 # Number of interpolation steps to bridge to this subtask segment
                 num_interpolation_steps=5,
                 # Additional fixed steps for the robot to reach the necessary pose
@@ -93,7 +93,7 @@ class FrankaCubeStackIKRelBlueprintMimicEnvCfg(FrankaCubeStackBlueprintEnvCfg, M
                 # Optional parameters for the selection strategy function
                 selection_strategy_kwargs={"nn_k": 3},
                 # Amount of action noise to apply during this subtask
-                action_noise=0.03,
+                action_noise=0.01,
                 # Number of interpolation steps to bridge to this subtask segment
                 num_interpolation_steps=5,
                 # Additional fixed steps for the robot to reach the necessary pose
@@ -115,7 +115,7 @@ class FrankaCubeStackIKRelBlueprintMimicEnvCfg(FrankaCubeStackBlueprintEnvCfg, M
                 # Optional parameters for the selection strategy function
                 selection_strategy_kwargs={"nn_k": 3},
                 # Amount of action noise to apply during this subtask
-                action_noise=0.03,
+                action_noise=0.01,
                 # Number of interpolation steps to bridge to this subtask segment
                 num_interpolation_steps=5,
                 # Additional fixed steps for the robot to reach the necessary pose

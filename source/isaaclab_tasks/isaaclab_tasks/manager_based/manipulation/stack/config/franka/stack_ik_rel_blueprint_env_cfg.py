@@ -134,7 +134,7 @@ class ObservationsCfg:
                 "sensor_cfg": SceneEntityCfg("table_cam"),
                 "data_type": "normals",
                 "normalize": True,
-                "save_image_to_file": True,
+                "save_image_to_file": False,
                 "image_path": "table_cam",
             },
         )
@@ -144,7 +144,7 @@ class ObservationsCfg:
                 "sensor_cfg": SceneEntityCfg("table_cam"),
                 "data_type": "semantic_segmentation",
                 "normalize": False,
-                "save_image_to_file": True,
+                "save_image_to_file": False,
                 "image_path": "table_cam",
             },
         )
@@ -154,7 +154,7 @@ class ObservationsCfg:
                 "sensor_cfg": SceneEntityCfg("table_high_cam"),
                 "data_type": "normals",
                 "normalize": True,
-                "save_image_to_file": True,
+                "save_image_to_file": False,
                 "image_path": "table_high_cam",
             },
         )
@@ -164,7 +164,7 @@ class ObservationsCfg:
                 "sensor_cfg": SceneEntityCfg("table_high_cam"),
                 "data_type": "semantic_segmentation",
                 "normalize": False,
-                "save_image_to_file": True,
+                "save_image_to_file": False,
                 "image_path": "table_high_cam",
             },
         )
@@ -183,6 +183,9 @@ class ObservationsCfg:
                 "robot_cfg": SceneEntityCfg("robot"),
                 "ee_frame_cfg": SceneEntityCfg("ee_frame"),
                 "object_cfg": SceneEntityCfg("cube_2"),
+                "gripper_open_val": torch.tensor([0.0]),
+                "gripper_threshold": 0.005,
+                "diff_threshold": 0.07,
             },
         )
         stack_1 = ObsTerm(
@@ -191,6 +194,7 @@ class ObservationsCfg:
                 "robot_cfg": SceneEntityCfg("robot"),
                 "upper_object_cfg": SceneEntityCfg("cube_2"),
                 "lower_object_cfg": SceneEntityCfg("cube_1"),
+                "gripper_open_val": torch.tensor([0.0]),
             },
         )
         grasp_2 = ObsTerm(
@@ -199,6 +203,9 @@ class ObservationsCfg:
                 "robot_cfg": SceneEntityCfg("robot"),
                 "ee_frame_cfg": SceneEntityCfg("ee_frame"),
                 "object_cfg": SceneEntityCfg("cube_3"),
+                "gripper_open_val": torch.tensor([0.0]),
+                "gripper_threshold": 0.005,
+                "diff_threshold": 0.07,
             },
         )
 
@@ -248,7 +255,7 @@ class FrankaCubeStackBlueprintEnvCfg(stack_joint_pos_env_cfg.FrankaCubeStackEnvC
 
         # Set table view camera
         self.scene.table_cam = CameraCfg(
-            prim_path="{ENV_REGEX_NS}/table_cam",
+            prim_path="{ENV_REGEX_NS}/Robot/Link6/camera_link/table_cam",
             update_period=0.0333,
             height=704,
             width=1280,
@@ -258,7 +265,7 @@ class FrankaCubeStackBlueprintEnvCfg(stack_joint_pos_env_cfg.FrankaCubeStackEnvC
             spawn=sim_utils.PinholeCameraCfg(
                 focal_length=24.0, focus_distance=400.0, horizontal_aperture=20.955, clipping_range=(0.1, 1.0e5)
             ),
-            offset=CameraCfg.OffsetCfg(pos=(1.0, 0.0, 0.33), rot=(-0.3799, 0.5963, 0.5963, -0.3799), convention="ros"),
+            offset=CameraCfg.OffsetCfg(pos=(0.03, 0.0, 0.0), rot=(0.94832, -0.3173, 0.0, 0.0), convention="ros"),
         )
 
         # Set table view camera

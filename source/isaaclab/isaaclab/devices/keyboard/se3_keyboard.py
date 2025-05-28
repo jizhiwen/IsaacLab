@@ -140,7 +140,7 @@ class CustomRos2Subscriber(Node):
 
             # 目前pico的姿态信息还没有发布出来，目前仅使用位置xyz
 
-            current_delta_rot[0] = (self.rz - last_rot[2]) * 2.0
+            # current_delta_rot[0] = (self.rz - last_rot[2]) * 2.0
             # current_delta_rot[1] = (self.rz - last_rot[2])
             # current_delta_rot[2] = (self.rz - last_rot[2])
 
