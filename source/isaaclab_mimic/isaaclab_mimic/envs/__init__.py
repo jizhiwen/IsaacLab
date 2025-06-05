@@ -13,6 +13,7 @@ from .franka_stack_ik_rel_blueprint_mimic_env_cfg import FrankaCubeStackIKRelBlu
 from .franka_stack_ik_rel_mimic_env import FrankaCubeStackIKRelMimicEnv
 from .franka_stack_ik_rel_mimic_env_cfg import FrankaCubeStackIKRelMimicEnvCfg
 from .franka_stack_ik_rel_visuomotor_mimic_env_cfg import FrankaCubeStackIKRelVisuomotorMimicEnvCfg
+from .franka_approach_ik_rel_blueprint_mimic_env_cfg import FrankaCubeApproachIKRelBlueprintMimicEnvCfg
 
 ##
 # Inverse Kinematics - Relative Pose Control
@@ -50,6 +51,15 @@ gym.register(
     entry_point="isaaclab_mimic.envs:FrankaCubeStackIKRelMimicEnv",
     kwargs={
         "env_cfg_entry_point": franka_stack_ik_rel_visuomotor_mimic_env_cfg.FrankaCubeStackIKRelVisuomotorMimicEnvCfg,
+    },
+    disable_env_checker=True,
+)
+
+gym.register(
+    id="Isaac-Stack-Approach-Franka-IK-Rel-Blueprint-Mimic-v0",
+    entry_point="isaaclab_mimic.envs:FrankaCubeStackIKRelMimicEnv",
+    kwargs={
+        "env_cfg_entry_point": franka_approach_ik_rel_blueprint_mimic_env_cfg.FrankaCubeApproachIKRelBlueprintMimicEnvCfg,
     },
     disable_env_checker=True,
 )

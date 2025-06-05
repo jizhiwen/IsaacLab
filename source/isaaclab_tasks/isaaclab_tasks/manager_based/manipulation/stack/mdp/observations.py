@@ -333,3 +333,50 @@ def object_stacked(
     )
 
     return stacked
+
+def red_cube_positions_in_world_frame(
+    env: ManagerBasedRLEnv,
+    cube_2_cfg: SceneEntityCfg = SceneEntityCfg("cube_2"),
+) -> torch.Tensor:
+    """The position of the cubes in the world frame."""
+    cube_2: RigidObject = env.scene[cube_2_cfg.name]
+
+    return cube_2.data.root_pos_w
+
+def red_cube_orientations_in_world_frame(
+    env: ManagerBasedRLEnv,
+    cube_2_cfg: SceneEntityCfg = SceneEntityCfg("cube_2"),
+):
+    """The orientation of the cubes in the world frame."""
+    cube_2: RigidObject = env.scene[cube_2_cfg.name]
+
+    return cube_2.data.root_quat_w
+
+def one_cube_object_obs(
+    env: ManagerBasedRLEnv,
+    cube_2_cfg: SceneEntityCfg = SceneEntityCfg("cube_2"),
+    ee_frame_cfg: SceneEntityCfg = SceneEntityCfg("ee_frame"),
+):
+    """
+    Object observations (in world frame):
+        cube_2 pos,
+        cube_2 quat,
+        gripper to cube_2,
+    """
+    cube_2: RigidObject = env.scene[cube_2_cfg.name]
+    ee_frame: FrameTransformer = env.scene[ee_frame_cfg.name]
+
+    cube_2_pos_w = cube_2.data.root_pos_w
+    cube_2_quat_w = cube_2.data.root_quat_w
+
+    ee_pos_w = ee_frame.data.target_pos_w[:, 0, :]
+    gripper_to_cube_2 = cube_2_pos_w - ee_pos_w
+
+    return torch.cat(
+        (
+            cube_2_pos_w - env.scene.env_origins,
+            cube_2_quat_w,
+            gripper_to_cube_2,
+        ),
+        dim=1,
+    )
