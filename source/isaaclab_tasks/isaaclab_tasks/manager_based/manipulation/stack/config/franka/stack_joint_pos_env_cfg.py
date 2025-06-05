@@ -32,7 +32,7 @@ class EventCfg:
         func=franka_stack_events.set_default_joint_pose,
         mode="startup",
         params={
-            "default_pose": [1.42, 0.76, 1.12, 0.06, 0.82, -0.20, 0.0, 0.0],
+            "default_pose": [1.6081, 0.6089, 1.1464, -0.0055, 1.3666, 0.0628, 0.0, 0.0],
         },
     )
 
@@ -51,8 +51,8 @@ class EventCfg:
         mode="reset",
         params={
             # X: Left/Right Y: Front/Back
-            "pose_range": {"x": (-0.15, 0.15), "y": (-0.52+0.05, -0.42+0.05), "z": (0.0203-0.05, 0.0203-0.05), "yaw": (0, 0, 0)},
-            "min_separation": 0.1,
+            "pose_range": {"x": (-0.13, 0.13), "y": (-0.32, -0.52), "z": (-0.0140 , -0.0140), "yaw": (-1, 1, 0)},
+            "min_separation": 0.02,
             "asset_cfgs": [SceneEntityCfg("cube_1"), SceneEntityCfg("cube_2"), SceneEntityCfg("cube_3")],
         },
     )
@@ -101,30 +101,30 @@ class FrankaCubeStackEnvCfg(StackEnvCfg):
         # Set each stacking cube deterministically
         self.scene.cube_1 = RigidObjectCfg(
             prim_path="{ENV_REGEX_NS}/Cube_1",
-            init_state=RigidObjectCfg.InitialStateCfg(pos=[0, -0.45, 0.0203-0.05], rot=[1, 0, 0, 0]),
+            init_state=RigidObjectCfg.InitialStateCfg(pos=[0, -0.45, -0.0140], rot=[1, 0, 0, 0]),
             spawn=UsdFileCfg(
                 usd_path=f"{ISAAC_NUCLEUS_DIR}/Props/Blocks/blue_block.usd",
-                scale=(1.0, 1.0, 1.0),
+                scale=(0.6383, 0.8511, 0.6383),
                 rigid_props=cube_properties,
                 semantic_tags=[("class", "cube_1")],
             ),
         )
         self.scene.cube_2 = RigidObjectCfg(
             prim_path="{ENV_REGEX_NS}/Cube_2",
-            init_state=RigidObjectCfg.InitialStateCfg(pos=[0.1, -0.5, 0.0203-0.05], rot=[1, 0, 0, 0]),
+            init_state=RigidObjectCfg.InitialStateCfg(pos=[0.1, -0.5, -0.0140], rot=[1, 0, 0, 0]),
             spawn=UsdFileCfg(
                 usd_path=f"{ISAAC_NUCLEUS_DIR}/Props/Blocks/red_block.usd",
-                scale=(1.0, 1.0, 1.0),
+                scale=(0.6383, 0.8511, 0.6383),
                 rigid_props=cube_properties,
                 semantic_tags=[("class", "cube_2")],
             ),
         )
         self.scene.cube_3 = RigidObjectCfg(
             prim_path="{ENV_REGEX_NS}/Cube_3",
-            init_state=RigidObjectCfg.InitialStateCfg(pos=[-0.2, -0.48, 0.0203-0.05], rot=[1, 0, 0, 0]),
+            init_state=RigidObjectCfg.InitialStateCfg(pos=[-0.2, -0.48, -0.0140], rot=[1, 0, 0, 0]),
             spawn=UsdFileCfg(
                 usd_path=f"{ISAAC_NUCLEUS_DIR}/Props/Blocks/green_block.usd",
-                scale=(1.0, 1.0, 1.0),
+                scale=(0.6383, 0.8511, 0.6383),
                 rigid_props=cube_properties,
                 semantic_tags=[("class", "cube_3")],
             ),

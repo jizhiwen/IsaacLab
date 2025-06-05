@@ -168,6 +168,26 @@ class ObservationsCfg:
                 "image_path": "table_high_cam",
             },
         )
+        table_side_cam_normals = ObsTerm(
+            func=image,
+            params={
+                "sensor_cfg": SceneEntityCfg("table_side_cam"),
+                "data_type": "normals",
+                "normalize": True,
+                "save_image_to_file": False,
+                "image_path": "table_side_cam",
+            },
+        )
+        table_side_cam_segmentation = ObsTerm(
+            func=image,
+            params={
+                "sensor_cfg": SceneEntityCfg("table_side_cam"),
+                "data_type": "semantic_segmentation",
+                "normalize": False,
+                "save_image_to_file": False,
+                "image_path": "table_side_cam",
+            },
+        )
 
         def __post_init__(self):
             self.enable_corruption = False
@@ -249,7 +269,7 @@ class FrankaCubeStackBlueprintEnvCfg(stack_joint_pos_env_cfg.FrankaCubeStackEnvC
             "class:table": (255, 237, 218, 255),
             "class:ground": (100, 100, 100, 255),
             "class:robot": (125, 125, 125, 255),
-            "class:UNLABELLED": (125, 125, 125, 255),
+            "class:UNLABELLED": (10, 10, 10, 255),
             "class:BACKGROUND": (10, 10, 10, 255),
         }
 
@@ -257,8 +277,8 @@ class FrankaCubeStackBlueprintEnvCfg(stack_joint_pos_env_cfg.FrankaCubeStackEnvC
         self.scene.table_cam = CameraCfg(
             prim_path="{ENV_REGEX_NS}/Robot/Link6/camera_link/table_cam",
             update_period=0.0333,
-            height=704,
-            width=1280,
+            height=480,
+            width=640,
             data_types=["rgb", "semantic_segmentation", "normals"],
             colorize_semantic_segmentation=True,
             semantic_segmentation_mapping=MAPPING,
@@ -272,13 +292,30 @@ class FrankaCubeStackBlueprintEnvCfg(stack_joint_pos_env_cfg.FrankaCubeStackEnvC
         self.scene.table_high_cam = CameraCfg(
             prim_path="{ENV_REGEX_NS}/table_high_cam",
             update_period=0.0333,
-            height=704,
-            width=1280,
+            height=480,
+            width=640,
             data_types=["rgb", "semantic_segmentation", "normals"],
             colorize_semantic_segmentation=True,
             semantic_segmentation_mapping=MAPPING,
+            # h = 1.37456192*f
             spawn=sim_utils.PinholeCameraCfg(
-                focal_length=24.0, focus_distance=400.0, horizontal_aperture=20.955, clipping_range=(1.5, 1.0e5)
+                focal_length=24.0, focus_distance=400.0, horizontal_aperture=32.989, clipping_range=(0.1, 1.0e5)
             ),
-            offset=CameraCfg.OffsetCfg(pos=(1.4, 1.8, 1.2), rot=(-0.1393, 0.2025, 0.8185, -0.5192), convention="ros"),
+            offset=CameraCfg.OffsetCfg(pos=(0, -0.85, 0.2305), rot=(-0.58779, 0.80902, 0, 0), convention="ros"),
+        )
+        
+        # Set table view camera
+        self.scene.table_side_cam = CameraCfg(
+            prim_path="{ENV_REGEX_NS}/table_side_cam",
+            update_period=0.0333,
+            height=480,
+            width=640,
+            data_types=["rgb", "semantic_segmentation", "normals"],
+            colorize_semantic_segmentation=True,
+            semantic_segmentation_mapping=MAPPING,
+            # h = 1.37456192*f
+            spawn=sim_utils.PinholeCameraCfg(
+                focal_length=24.0, focus_distance=400.0, horizontal_aperture=32.989, clipping_range=(0.1, 1.0e5)
+            ),
+            offset=CameraCfg.OffsetCfg(pos=(0.43, -0.38, 0.1), rot=(-0.5, 0.5, 0.5, -0.5), convention="ros"),
         )
