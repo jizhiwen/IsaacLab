@@ -131,9 +131,9 @@ class CustomRos2Subscriber(Node):
                 last_rot = np.array([self.rx, self.ry, self.rz])
                 return
 
-            current_delta_pos[0] = -(self.x - last_pose[0]) * 3.0
-            current_delta_pos[1] = -(self.z - last_pose[2]) * 3.0
-            current_delta_pos[2] = (self.y - last_pose[1]) * 3.0
+            current_delta_pos[0] = -(self.x - last_pose[0]) * 4.0
+            current_delta_pos[1] = -(self.z - last_pose[2]) * 4.0
+            current_delta_pos[2] = (self.y - last_pose[1]) * 4.0
 
             last_pose = np.array([self.x, self.y, self.z])
 

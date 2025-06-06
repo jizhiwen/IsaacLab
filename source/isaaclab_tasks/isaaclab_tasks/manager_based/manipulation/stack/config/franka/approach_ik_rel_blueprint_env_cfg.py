@@ -6,6 +6,7 @@
 import os
 import torch
 from torchvision.utils import save_image
+from datetime import datetime
 
 import isaaclab.sim as sim_utils
 import isaaclab.utils.math as math_utils
@@ -30,6 +31,8 @@ from isaaclab_assets.robots.franka import FRANKA_PANDA_HIGH_PD_CFG  # isort: ski
 from isaaclab_tasks.manager_based.manipulation.stack import mdp
 from isaaclab_assets.robots.realman import REALMAN_HIGH_PD_CFG # isort: skip
 
+save_image_dir = f"/mnt/data/datasets/_isaaclab_out_/{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
+need_save_image = True
 
 def image(
     env: ManagerBasedEnv,
@@ -127,6 +130,7 @@ class ObservationsCfg:
     @configclass
     class RGBCameraPolicyCfg(ObsGroup):
         """Observations for policy group with RGB images."""
+        global save_image_dir, need_save_image
 
         table_cam_normals = ObsTerm(
             func=image,
@@ -168,6 +172,16 @@ class ObservationsCfg:
                 "image_path": "table_high_cam",
             },
         )
+        table_high_cam_rgb = ObsTerm(
+            func=image,
+            params={
+                "sensor_cfg": SceneEntityCfg("table_high_cam"),
+                "data_type": "rgb",
+                "normalize": False,
+                "save_image_to_file": need_save_image,
+                "image_path": f"{save_image_dir}/table_high_cam",
+            },
+        )
         table_side_cam_normals = ObsTerm(
             func=image,
             params={
@@ -186,6 +200,16 @@ class ObservationsCfg:
                 "normalize": False,
                 "save_image_to_file": False,
                 "image_path": "table_side_cam",
+            },
+        )
+        table_side_cam_rgb = ObsTerm(
+            func=image,
+            params={
+                "sensor_cfg": SceneEntityCfg("table_side_cam"),
+                "data_type": "rgb",
+                "normalize": False,
+                "save_image_to_file": need_save_image,
+                "image_path": f"{save_image_dir}/table_side_cam",
             },
         )
 
@@ -242,7 +266,7 @@ class FrankaCubeApproachBlueprintEnvCfg(approach_joint_pos_env_cfg.FrankaCubeApp
         # Set table view camera
         self.scene.table_cam = CameraCfg(
             prim_path="{ENV_REGEX_NS}/Robot/Link6/camera_link/table_cam",
-            update_period=0.0333,
+            update_period=0.0666,
             height=480,
             width=640,
             data_types=["rgb", "semantic_segmentation", "normals"],
@@ -257,7 +281,7 @@ class FrankaCubeApproachBlueprintEnvCfg(approach_joint_pos_env_cfg.FrankaCubeApp
         # Set table view camera
         self.scene.table_high_cam = CameraCfg(
             prim_path="{ENV_REGEX_NS}/table_high_cam",
-            update_period=0.0333,
+            update_period=0.0666,
             height=480,
             width=640,
             data_types=["rgb", "semantic_segmentation", "normals"],
@@ -273,7 +297,7 @@ class FrankaCubeApproachBlueprintEnvCfg(approach_joint_pos_env_cfg.FrankaCubeApp
         # Set table view camera
         self.scene.table_side_cam = CameraCfg(
             prim_path="{ENV_REGEX_NS}/table_side_cam",
-            update_period=0.0333,
+            update_period=0.0666,
             height=480,
             width=640,
             data_types=["rgb", "semantic_segmentation", "normals"],
@@ -283,5 +307,5 @@ class FrankaCubeApproachBlueprintEnvCfg(approach_joint_pos_env_cfg.FrankaCubeApp
             spawn=sim_utils.PinholeCameraCfg(
                 focal_length=24.0, focus_distance=400.0, horizontal_aperture=32.989, clipping_range=(0.1, 1.0e5)
             ),
-            offset=CameraCfg.OffsetCfg(pos=(0.43, -0.38, 0.1), rot=(-0.5, 0.5, 0.5, -0.5), convention="ros"),
+            offset=CameraCfg.OffsetCfg(pos=(0.54927, -0.37389, 0.1), rot=(-0.5, 0.5, 0.5, -0.5), convention="ros"),
         )
