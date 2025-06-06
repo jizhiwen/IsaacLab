@@ -51,9 +51,10 @@ class EventCfg:
         mode="reset",
         params={
             # X: Left/Right Y: Front/Back
-            "pose_range": {"x": (-0.13, 0.13), "y": (-0.32, -0.52), "z": (-0.0140 , -0.0140), "yaw": (-1, 1, 0)},
+            "pose_range": {"x": (-0.14, 0.14), "y": (-0.31, -0.42), "z": (-0.0140 , -0.0140), "yaw": (-1, 1, 0)},
             "min_separation": 0.02,
             "asset_cfgs": [SceneEntityCfg("cube_2")],
+            "radius": 0.40,
         },
     )
 

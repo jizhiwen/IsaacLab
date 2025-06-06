@@ -51,6 +51,9 @@ def randomize_joint_by_gaussian_offset(
     # Don't noise the gripper poses
     joint_pos[:, -2:] = asset.data.default_joint_pos[env_ids, -2:]
 
+    # Only noise the first joint
+    joint_pos[:, 1:6] = asset.data.default_joint_pos[env_ids, 1:6]
+
     # Set into the physics simulation
     asset.set_joint_position_target(joint_pos, env_ids=env_ids)
     asset.set_joint_velocity_target(joint_vel, env_ids=env_ids)
@@ -79,6 +82,7 @@ def sample_object_poses(
     min_separation: float = 0.0,
     pose_range: dict[str, tuple[float, float]] = {},
     max_sample_tries: int = 5000,
+    radius: float = 0
 ):
     range_list = [pose_range.get(key, (0.0, 0.0)) for key in ["x", "y", "z", "roll", "pitch", "yaw"]]
     pose_list = []
@@ -92,9 +96,12 @@ def sample_object_poses(
                 pose_list.append(sample)
                 break
 
+            # Check if pose of object is inside ee space
+            distance_check = math.sqrt(math.pow(sample[0],2)+math.pow(sample[1],2)) <= radius if radius > 0 else True
+
             # Check if pose of object is sufficiently far away from all other objects
             separation_check = [math.dist(sample[:3], pose[:3]) > min_separation for pose in pose_list]
-            if False not in separation_check:
+            if False not in separation_check and distance_check:
                 pose_list.append(sample)
                 break
 
@@ -108,6 +115,7 @@ def randomize_object_pose(
     min_separation: float = 0.0,
     pose_range: dict[str, tuple[float, float]] = {},
     max_sample_tries: int = 5000,
+    radius: float = 0,
 ):
     if env_ids is None:
         return
@@ -119,6 +127,7 @@ def randomize_object_pose(
             min_separation=min_separation,
             pose_range=pose_range,
             max_sample_tries=max_sample_tries,
+            radius=radius,
         )
 
         # Randomize pose for each object
