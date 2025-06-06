@@ -158,8 +158,11 @@ class FrankaCubeStackIKRelMimicEnv(ManagerBasedRLMimicEnv):
 
         signals = dict()
         subtask_terms = self.obs_buf["subtask_terms"]
-        signals["grasp_1"] = subtask_terms["grasp_1"][env_ids]
-        signals["grasp_2"] = subtask_terms["grasp_2"][env_ids]
-        signals["stack_1"] = subtask_terms["stack_1"][env_ids]
+        if "grasp_1" in subtask_terms:
+            signals["grasp_1"] = subtask_terms["grasp_1"][env_ids]
+        if "grasp_2" in subtask_terms:
+            signals["grasp_2"] = subtask_terms["grasp_2"][env_ids]
+        if "stack_1" in subtask_terms:
+            signals["stack_1"] = subtask_terms["stack_1"][env_ids]
         # final subtask is placing cubeC on cubeA (motion relative to cubeA) - but final subtask signal is not needed
         return signals

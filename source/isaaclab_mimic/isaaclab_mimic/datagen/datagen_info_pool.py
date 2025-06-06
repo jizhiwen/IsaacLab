@@ -95,7 +95,10 @@ class DataGenInfoPool:
             eef_pose = ep_grp["obs"]["datagen_info"]["eef_pose"]
             object_poses_dict = ep_grp["obs"]["datagen_info"]["object_pose"]
             target_eef_pose = ep_grp["obs"]["datagen_info"]["target_eef_pose"]
-            subtask_term_signals_dict = ep_grp["obs"]["datagen_info"]["subtask_term_signals"]
+            if "subtask_term_signals" in ep_grp["obs"]["datagen_info"]:
+                subtask_term_signals_dict = ep_grp["obs"]["datagen_info"]["subtask_term_signals"]
+            else:
+                subtask_term_signals_dict = []
         else:
             raise ValueError("Episode to be loaded to DatagenInfo pool lacks datagen_info annotations")
 

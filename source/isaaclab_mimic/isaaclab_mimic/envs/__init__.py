@@ -56,7 +56,7 @@ gym.register(
 )
 
 gym.register(
-    id="Isaac-Stack-Approach-Franka-IK-Rel-Blueprint-Mimic-v0",
+    id="Isaac-Approach-Cube-Franka-IK-Rel-Blueprint-Mimic-v0",
     entry_point="isaaclab_mimic.envs:FrankaCubeStackIKRelMimicEnv",
     kwargs={
         "env_cfg_entry_point": franka_approach_ik_rel_blueprint_mimic_env_cfg.FrankaCubeApproachIKRelBlueprintMimicEnvCfg,
