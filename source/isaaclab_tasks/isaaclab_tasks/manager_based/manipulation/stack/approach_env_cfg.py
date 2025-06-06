@@ -48,6 +48,16 @@ class ObjectTableSceneCfg(InteractiveSceneCfg):
         ),
     )
 
+    # Robot base
+    robot_base = AssetBaseCfg(
+        prim_path="{ENV_REGEX_NS}/RobotBase",
+        init_state=AssetBaseCfg.InitialStateCfg(pos=[0.0, 0.0, -0.4087], rot=[0, 0, 0, 1]),
+        spawn=UsdFileCfg(
+            usd_path=f"{ISAAC_NUCLEUS_DIR}/Props/Shapes/cylinder.usd",
+            scale=(0.13, 0.13, 1),
+        ),
+    )
+
     # plane
     plane = AssetBaseCfg(
         prim_path="/World/GroundPlane",
