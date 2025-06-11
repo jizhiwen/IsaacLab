@@ -24,7 +24,7 @@ from isaaclab.utils.assets import ISAACLAB_NUCLEUS_DIR
 
 REALMAN_CFG = ArticulationCfg(
     spawn=sim_utils.UsdFileCfg(
-        usd_path=f"{ISAACLAB_NUCLEUS_DIR}/Robots/RealMan/realman.usd",
+        usd_path=f"{ISAACLAB_NUCLEUS_DIR}/Robots/RealMan/realman_brannew6.usd",
         activate_contact_sensors=False,
         rigid_props=sim_utils.RigidBodyPropertiesCfg(
             disable_gravity=False,

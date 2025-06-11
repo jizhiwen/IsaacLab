@@ -272,10 +272,11 @@ class Se3Keyboard(DeviceBase):
         """
         global close_gripper
         # convert to rotation vector
-        rot_vec = Rotation.from_euler("XYZ", current_delta_rot).as_rotvec()
+        rot_vec = Rotation.from_euler("XYZ", self._delta_rot).as_rotvec()
+        current_rot_vec = Rotation.from_euler("XYZ", current_delta_rot).as_rotvec()
         # return the command and gripper state
         # print(current_delta_pos, current_delta_rot)
-        return np.concatenate([current_delta_pos, rot_vec]), close_gripper
+        return np.concatenate([self._delta_pos+current_delta_pos, rot_vec+current_rot_vec]), close_gripper or self._close_gripper
 
     """
     Internal helpers.

@@ -92,6 +92,9 @@ def main():
 
     grapper_closed = False
 
+    success_step_count = 0
+    total_step_count = 0
+
     # run inference with the policy
     obs, _ = env.reset()
     with torch.inference_mode():
@@ -117,13 +120,16 @@ def main():
 
                 if success_term is not None:
                     if bool(success_term.func(env, **success_term.params)[0]):
-                        print("success ...")
+                        total_step_count = total_step_count + 1
+                        success_step_count = success_step_count + 1
+                        print(f"[{success_step_count}/{total_step_count}] Task success ...")
                         obs, _ = env.reset()
                         break
 
                 if timeout_term is not None:
                     if bool(timeout_term.func(env, **timeout_term.params)[0]):
-                        print("timeout ...")
+                        total_step_count = total_step_count + 1
+                        print(f"[{success_step_count}/{total_step_count}] Task fail ...")
                         obs, _ = env.reset()
                         break
 
