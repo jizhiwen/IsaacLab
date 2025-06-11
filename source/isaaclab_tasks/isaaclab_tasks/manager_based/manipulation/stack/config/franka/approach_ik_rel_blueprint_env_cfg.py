@@ -265,7 +265,7 @@ class FrankaCubeApproachBlueprintEnvCfg(approach_joint_pos_env_cfg.FrankaCubeApp
 
         # Set table view camera
         self.scene.table_cam = CameraCfg(
-            prim_path="{ENV_REGEX_NS}/Robot/Link6/camera_link/table_cam",
+            prim_path="{ENV_REGEX_NS}/Robot/rm65/Link6/table_cam",
             update_period=0.0666,
             height=480,
             width=640,
