@@ -32,7 +32,7 @@ from isaaclab_tasks.manager_based.manipulation.stack import mdp
 from isaaclab_assets.robots.realman import REALMAN_HIGH_PD_CFG # isort: skip
 
 save_image_dir = f"/mnt/data/datasets/_isaaclab_out_/{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
-need_save_image = False
+need_save_image = True
 
 def image(
     env: ManagerBasedEnv,
@@ -152,6 +152,16 @@ class ObservationsCfg:
                 "image_path": "table_cam",
             },
         )
+        table_cam_rgb = ObsTerm(
+            func=image,
+            params={
+                "sensor_cfg": SceneEntityCfg("table_cam"),
+                "data_type": "rgb",
+                "normalize": False,
+                "save_image_to_file": need_save_image,
+                "image_path": f"{save_image_dir}/table_cam",
+            },
+        )
         table_high_cam_normals = ObsTerm(
             func=image,
             params={
@@ -182,36 +192,6 @@ class ObservationsCfg:
                 "image_path": f"{save_image_dir}/table_high_cam",
             },
         )
-        table_side_cam_normals = ObsTerm(
-            func=image,
-            params={
-                "sensor_cfg": SceneEntityCfg("table_side_cam"),
-                "data_type": "normals",
-                "normalize": True,
-                "save_image_to_file": False,
-                "image_path": "table_side_cam",
-            },
-        )
-        table_side_cam_segmentation = ObsTerm(
-            func=image,
-            params={
-                "sensor_cfg": SceneEntityCfg("table_side_cam"),
-                "data_type": "semantic_segmentation",
-                "normalize": False,
-                "save_image_to_file": False,
-                "image_path": "table_side_cam",
-            },
-        )
-        table_side_cam_rgb = ObsTerm(
-            func=image,
-            params={
-                "sensor_cfg": SceneEntityCfg("table_side_cam"),
-                "data_type": "rgb",
-                "normalize": False,
-                "save_image_to_file": need_save_image,
-                "image_path": f"{save_image_dir}/table_side_cam",
-            },
-        )
 
         def __post_init__(self):
             self.enable_corruption = False
@@ -220,6 +200,18 @@ class ObservationsCfg:
     @configclass
     class SubtaskCfg(ObsGroup):
         """Observations for subtask group."""
+
+        grasp_1 = ObsTerm(
+            func=mdp.object_grasped,
+            params={
+                "robot_cfg": SceneEntityCfg("robot"),
+                "ee_frame_cfg": SceneEntityCfg("ee_frame"),
+                "object_cfg": SceneEntityCfg("cube_2"),
+                "gripper_open_val": torch.tensor([0.0]),
+                "gripper_threshold": 0.005,
+                "diff_threshold": 0.09,
+            },
+        )
 
         def __post_init__(self):
             self.enable_corruption = False
@@ -275,7 +267,7 @@ class FrankaCubePickPlaceBlueprintEnvCfg(pick_place_joint_pos_env_cfg.FrankaCube
             spawn=sim_utils.PinholeCameraCfg(
                 focal_length=24.0, focus_distance=400.0, horizontal_aperture=20.955, clipping_range=(0.1, 1.0e5)
             ),
-            offset=CameraCfg.OffsetCfg(pos=(0.03, 0.0, 0.0), rot=(0.94832, -0.3173, 0.0, 0.0), convention="ros"),
+            offset=CameraCfg.OffsetCfg(pos=(-0.3934, 0, -0.11359), rot=(0.61008,-0.2652, 0.3313,-0.66911), convention="ros"),
         )
 
         # Set table view camera
@@ -292,20 +284,4 @@ class FrankaCubePickPlaceBlueprintEnvCfg(pick_place_joint_pos_env_cfg.FrankaCube
                 focal_length=24.0, focus_distance=400.0, horizontal_aperture=32.989, clipping_range=(0.1, 1.0e5)
             ),
             offset=CameraCfg.OffsetCfg(pos=(0, -0.85, 0.2305), rot=(-0.58779, 0.80902, 0, 0), convention="ros"),
-        )
-        
-        # Set table view camera
-        self.scene.table_side_cam = CameraCfg(
-            prim_path="{ENV_REGEX_NS}/table_side_cam",
-            update_period=0.0666,
-            height=480,
-            width=640,
-            data_types=["rgb", "semantic_segmentation", "normals"],
-            colorize_semantic_segmentation=True,
-            semantic_segmentation_mapping=MAPPING,
-            # h = 1.37456192*f
-            spawn=sim_utils.PinholeCameraCfg(
-                focal_length=24.0, focus_distance=400.0, horizontal_aperture=32.989, clipping_range=(0.1, 1.0e5)
-            ),
-            offset=CameraCfg.OffsetCfg(pos=(0.54927, -0.37389, 0.1), rot=(-0.5, 0.5, 0.5, -0.5), convention="ros"),
         )

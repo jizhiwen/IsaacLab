@@ -48,15 +48,6 @@ class ObjectTableSceneCfg(InteractiveSceneCfg):
         ),
     )
 
-    bin = AssetBaseCfg(
-        prim_path="{ENV_REGEX_NS}/Bin",
-        init_state=AssetBaseCfg.InitialStateCfg(pos=[0.2847,-0.3282,-0.014], rot=[1, 0, 0, 0]),
-        spawn=UsdFileCfg(
-            usd_path=f"{ISAAC_NUCLEUS_DIR}/Props/KLT_Bin/bin.usd",
-            scale=(1.0458,0.7028,0.2717),
-        ),
-    )
-
     # Robot base
     robot_base = AssetBaseCfg(
         prim_path="{ENV_REGEX_NS}/RobotBase",
@@ -147,7 +138,7 @@ class TerminationsCfg:
         func=mdp.root_height_below_minimum, params={"minimum_height": -0.05, "asset_cfg": SceneEntityCfg("cube_2")}
     )
 
-    success = DoneTerm(func=mdp.cubes_approached, params={"gripper_open_val": torch.tensor([0.0])})
+    success = DoneTerm(func=mdp.cube_placed, params={"gripper_open_val": torch.tensor([0.0])})
 
 
 @configclass

@@ -142,7 +142,7 @@ class CustomRos2Subscriber(Node):
 
             # current_delta_rot[0] = (self.rz - last_rot[2]) * 2.0
             # current_delta_rot[1] = (self.rz - last_rot[2])
-            # current_delta_rot[2] = (self.rz - last_rot[2])
+            current_delta_rot[2] = -(self.rx - last_rot[0]) * 5.0
 
             last_rot = np.array([self.rx, self.ry, self.rz])
                 

@@ -87,3 +87,40 @@ def cubes_approached(
     approached = pose_diff < diff_threshold
 
     return approached
+
+def cube_placed(
+    env: ManagerBasedRLEnv,
+    robot_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
+    cube_2_cfg: SceneEntityCfg = SceneEntityCfg("cube_2"),
+    bin_cfg: SceneEntityCfg = SceneEntityCfg("bin"),
+    xy_threshold: float = 0.1,
+    height_threshold: float = 0.005,
+    height_diff: float = 0.0468,
+    gripper_open_val: torch.tensor = torch.tensor([0.04]),
+    atol=0.0001,
+    rtol=0.0001,
+):
+    robot: Articulation = env.scene[robot_cfg.name]
+    cube_2: RigidObject = env.scene[cube_2_cfg.name]
+    bin: RigidObject = env.scene[bin_cfg.name]
+
+    pos_diff = cube_2.data.root_pos_w - bin.data.root_pos_w
+
+    # Compute cube position difference in x-y plane
+    xy_dist = torch.norm(pos_diff[:, :2], dim=1)
+
+    # Compute cube height difference
+    h_dist = torch.norm(pos_diff[:, 2:], dim=1)
+
+
+    stacked = torch.logical_and(xy_dist < xy_threshold, h_dist < height_threshold)
+
+    # Check gripper positions
+    stacked = torch.logical_and(
+        torch.isclose(robot.data.joint_pos[:, -1], gripper_open_val.to(env.device), atol=atol, rtol=rtol), stacked
+    )
+    stacked = torch.logical_and(
+        torch.isclose(robot.data.joint_pos[:, -2], gripper_open_val.to(env.device), atol=atol, rtol=rtol), stacked
+    )
+
+    return stacked

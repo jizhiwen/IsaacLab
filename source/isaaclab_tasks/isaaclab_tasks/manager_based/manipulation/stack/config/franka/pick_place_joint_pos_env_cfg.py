@@ -51,10 +51,10 @@ class EventCfg:
         mode="reset",
         params={
             # X: Left/Right Y: Front/Back
-            "pose_range": {"x": (-0.14, 0.14), "y": (-0.31, -0.42), "z": (-0.0140 , -0.0140), "yaw": (-1, 1, 0)},
+            "pose_range": {"x": (-0.14, 0.25), "y": (-0.52, -0.20), "z": (-0.0140 , -0.0140), "yaw": (-1, 1, 0)},
             "min_separation": 0.02,
             "asset_cfgs": [SceneEntityCfg("cube_2")],
-            "radius": 0.40,
+            # "radius": 0.40,
         },
     )
 
@@ -111,6 +111,18 @@ class FrankaCubePickPlaceEnvCfg(PickPlaceEnvCfg):
             ),
         )
 
+        # Set bin
+        self.scene.bin = RigidObjectCfg(
+            prim_path="{ENV_REGEX_NS}/Bin",
+            init_state=RigidObjectCfg.InitialStateCfg(pos=[0.2847-0.4279-0.105,-0.3282,-0.014], rot=[1, 0, 0, 0]),
+            spawn=UsdFileCfg(
+                usd_path=f"{ISAAC_NUCLEUS_DIR}/Props/KLT_Bin/bin.usd",
+                scale=(1.0458,0.7028,0.2717),
+                rigid_props=cube_properties,
+                semantic_tags=[("class", "bin")],
+            ),
+        )
+
         # Listens to the required transforms
         marker_cfg = FRAME_MARKER_CFG.copy()
         marker_cfg.markers["frame"].scale = (0.1, 0.1, 0.1)
@@ -124,7 +136,7 @@ class FrankaCubePickPlaceEnvCfg(PickPlaceEnvCfg):
                     prim_path="{ENV_REGEX_NS}/Robot/rm65/Link6",
                     name="end_effector",
                     offset=OffsetCfg(
-                        pos=[0.0, 0.0, 0.1034],
+                        pos=[0.0, 0.0, 0.10667],
                     ),
                 ),
                 FrameTransformerCfg.FrameCfg(
