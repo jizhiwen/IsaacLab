@@ -17,6 +17,7 @@ from . import (
     approach_ik_rel_blueprint_env_cfg,
     approach_ik_pos_inference_env_cfg,
     approach_ik_rel_debug_env_cfg,
+    pick_place_ik_rel_blueprint_env_cfg,
 )
 
 ##
@@ -121,6 +122,15 @@ gym.register(
     entry_point="isaaclab.envs:ManagerBasedRLEnv",
     kwargs={
         "env_cfg_entry_point": approach_ik_rel_debug_env_cfg.FrankaCubeApproachDebugEnvCfg,
+    },
+    disable_env_checker=True,
+)
+
+gym.register(
+    id="Isaac-Pick-Place-Cube-Franka-IK-Rel-Blueprint-v0",
+    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+    kwargs={
+        "env_cfg_entry_point": pick_place_ik_rel_blueprint_env_cfg.FrankaCubePickPlaceBlueprintEnvCfg,
     },
     disable_env_checker=True,
 )
