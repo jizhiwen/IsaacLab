@@ -51,7 +51,7 @@ class EventCfg:
         mode="reset",
         params={
             # X: Left/Right Y: Front/Back
-            "pose_range": {"x": (-0.14, 0.25), "y": (-0.52, -0.20), "z": (-0.0140 , -0.0140), "yaw": (-1, 1, 0)},
+            "pose_range": {"x": (-0.12, 0.20), "y": (-0.43, -0.20), "z": (-0.0140 , -0.0140), "yaw": (-1, 1, 0)},
             "min_separation": 0.02,
             "asset_cfgs": [SceneEntityCfg("cube_2")],
             # "radius": 0.40,
@@ -143,14 +143,14 @@ class FrankaCubePickPlaceEnvCfg(PickPlaceEnvCfg):
                     prim_path="{ENV_REGEX_NS}/Robot/pgi/finger2_link",
                     name="tool_rightfinger",
                     offset=OffsetCfg(
-                        pos=(0.0, 0.0, 0.046),
+                        pos=(0.0, 0.0, 0.0),
                     ),
                 ),
                 FrameTransformerCfg.FrameCfg(
                     prim_path="{ENV_REGEX_NS}/Robot/pgi/finger1_link",
                     name="tool_leftfinger",
                     offset=OffsetCfg(
-                        pos=(0.0, 0.0, 0.046),
+                        pos=(0.0, 0.0, 0.0),
                     ),
                 ),
             ],

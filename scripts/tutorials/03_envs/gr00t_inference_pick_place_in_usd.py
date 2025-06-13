@@ -83,7 +83,7 @@ def main():
     modality_transform = data_config.transform()
 
     policy = Gr00tPolicy(
-        model_path="/home/robot/src/IsaacLab/models/checkpoint-30000",
+        model_path="/home/robot/models/pick-plack-gr00t-n1/checkpoint-7000",
         modality_config=modality_config,
         modality_transform=modality_transform,
         embodiment_tag="new_embodiment",
@@ -99,12 +99,14 @@ def main():
     obs, _ = env.reset()
     with torch.inference_mode():
         while simulation_app.is_running():
+            gripper1 = obs['policy']['joint_pos'].cpu().numpy()[0,6]
+            gripper2 = obs['policy']['joint_pos'].cpu().numpy()[0,7]
             realman_obs = {
                 "state.single_arm": np.degrees(obs['policy']['joint_pos'].cpu().numpy()[:,:6]),
-                "state.gripper": np.array([[0.0 if grapper_closed else 1000.0]]),
+                "state.gripper": np.array([[1000 - (gripper1+gripper2)/0.08*1000]]),
                 "video.front_view": obs['rgb_camera']['table_high_cam_rgb'].cpu().numpy().astype(np.uint8),
-                "video.right_view": obs['rgb_camera']['table_side_cam_rgb'].cpu().numpy().astype(np.uint8),
-                "annotation.human.action.task_description": "Move above the red square.",
+                "video.right_view": obs['rgb_camera']['table_cam_rgb'].cpu().numpy().astype(np.uint8),
+                "annotation.human.action.task_description": "Pick up the blue square and place it in the box.",
             }
 
             action_chunk = policy.get_action(realman_obs)
@@ -112,8 +114,7 @@ def main():
             gripper = action_chunk['action.gripper']
 
             for i in range(0, len(single_arm)):
-                grapper_closed = False if gripper[i] >= 900 else True
-                grapper_closed = False
+                grapper_closed = False if gripper[i] >= 500 else True
                 action = np.append(np.deg2rad(single_arm[i]), -1 if grapper_closed else 1)
                 action = torch.tensor(action, dtype=torch.float, device=env.device).repeat(env.num_envs, 1)
                 obs, _, _, _, _ = env.step(action)

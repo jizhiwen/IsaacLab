@@ -208,7 +208,7 @@ class ObservationsCfg:
                 "ee_frame_cfg": SceneEntityCfg("ee_frame"),
                 "object_cfg": SceneEntityCfg("cube_2"),
                 "gripper_open_val": torch.tensor([0.0]),
-                "gripper_threshold": 0.005,
+                "gripper_threshold": 0.004,
                 "diff_threshold": 0.09,
             },
         )
