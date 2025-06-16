@@ -15,12 +15,13 @@ import imageio
 import shutil
 import warp as wp
 
-DATASET_PATH = "/mnt/data/datasets/generated_dataset_pick_place_v2.hdf5"
-IMAGE_PATH = "/mnt/data/datasets/_isaaclab_out_/2025-06-13_23-48-01"
-OUTPUT_DATASET_DIR = "/home/robot/datasets2/lerobot/synthetic-pick-place-demo-1k"
+DATASET_PATH = "/mnt/data/datasets/generated_dataset_pick_place_v3_tmp.hdf5"
+IMAGE_PATH = "/mnt/data/datasets/_isaaclab_out_/2025-06-16_15-00-43"
+OUTPUT_DATASET_DIR = "/home/robot/datasets2/lerobot/pick-place-demo-v3-tmp"
 EPISODE_NUM = 99999999999
 VIDEO_KEY = "front_view"
-VIDEO_KEY2 = "right_view"
+VIDEO_KEY2 = "side_view"
+VIDEO_KEY3 = "wrist_view"
 ANNOTATION_KEY_TO_TASK_INDEX = {}
 COMPUTE_STATS = True
 SPLITS = {"train": "0:1"}
@@ -349,6 +350,7 @@ class DatasetFormatter:
             "video": {
                 self.video_key: {"original_key": f"observation.images.{self.video_key}"},
                 VIDEO_KEY2: {"original_key": f"observation.images.{VIDEO_KEY2}"},
+                VIDEO_KEY3: {"original_key": f"observation.images.{VIDEO_KEY3}"},
             },
         }
         if ANNOTATION_MODALITIES:
@@ -412,6 +414,13 @@ class DatasetFormatter:
             }
             video_feature_key2 = f"observation.images.{VIDEO_KEY2}"
             info_config["features"][video_feature_key2] = {
+                "dtype": "video",
+                "shape": [video_info["height"], video_info["width"], video_info["channels"]],
+                "names": ["height", "width", "channels"],
+                "info": { "video.fps": round(fps, 2), "video.height": video_info["height"], "video.width": video_info["width"], "video.channels": video_info["channels"], "video.codec": "h264", "video.pix_fmt": "yuv420p", "video.is_depth_map": False, "has_audio": False }
+            }
+            video_feature_key3 = f"observation.images.{VIDEO_KEY3}"
+            info_config["features"][video_feature_key3] = {
                 "dtype": "video",
                 "shape": [video_info["height"], video_info["width"], video_info["channels"]],
                 "names": ["height", "width", "channels"],
@@ -676,7 +685,22 @@ def main():
             dataset_formatter.write_video(episode_frames_pil, global_fps, episode_index)
             episode_frames_pil.clear()
             
-            
+            frame_name_pattern = "table_side_cam_rgb_trial_{trial_num}_tile_0_step_{frame_idx}.png"
+            normals_name_pattern = "table_side_cam_normals_trial_{trial_num}_tile_0_step_{frame_idx}.png"
+            segmentation_name_pattern = "table_side_cam_semantic_segmentation_trial_{trial_num}_tile_0_step_{frame_idx}.png"
+
+            episode_frames_pil = []
+            for frame_idx in range(video_start+1, video_start + video_length):
+                file_path_rgb = os.path.join(IMAGE_PATH, frame_name_pattern.format(trial_num=episode_index, frame_idx=frame_idx))
+                pil_image = Image.open(file_path_rgb)
+                episode_frames_pil.append(pil_image)
+            file_path_rgb = os.path.join(IMAGE_PATH, frame_name_pattern.format(trial_num=episode_index+1, frame_idx=video_start + video_length))
+            pil_image = Image.open(file_path_rgb)
+            episode_frames_pil.append(pil_image)
+            dataset_formatter.write_parquet(df, episode_index)
+            dataset_formatter.write_video(episode_frames_pil, global_fps, episode_index, video_key=VIDEO_KEY2)
+            episode_frames_pil.clear()
+
             frame_name_pattern = "table_cam_rgb_trial_{trial_num}_tile_0_step_{frame_idx}.png"
             normals_name_pattern = "table_cam_normals_trial_{trial_num}_tile_0_step_{frame_idx}.png"
             segmentation_name_pattern = "table_cam_semantic_segmentation_trial_{trial_num}_tile_0_step_{frame_idx}.png"
@@ -690,7 +714,7 @@ def main():
             pil_image = Image.open(file_path_rgb)
             episode_frames_pil.append(pil_image)
             dataset_formatter.write_parquet(df, episode_index)
-            dataset_formatter.write_video(episode_frames_pil, global_fps, episode_index, video_key=VIDEO_KEY2)
+            dataset_formatter.write_video(episode_frames_pil, global_fps, episode_index, video_key=VIDEO_KEY3)
             episode_frames_pil.clear()
 
             # --- Calculate Stats (Optional) ---
