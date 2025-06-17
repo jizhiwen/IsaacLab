@@ -289,8 +289,8 @@ class FrankaCubePickPlaceBlueprintEnvCfg(pick_place_joint_pos_env_cfg.FrankaCube
         self.scene.table_cam = CameraCfg(
             prim_path="{ENV_REGEX_NS}/Robot/rm65/Link6/table_cam",
             update_period=0.0666,
-            height=480,
-            width=640,
+            height=256,
+            width=256,
             data_types=["rgb", "semantic_segmentation", "normals"],
             colorize_semantic_segmentation=True,
             semantic_segmentation_mapping=MAPPING,
@@ -304,8 +304,8 @@ class FrankaCubePickPlaceBlueprintEnvCfg(pick_place_joint_pos_env_cfg.FrankaCube
         self.scene.table_high_cam = CameraCfg(
             prim_path="{ENV_REGEX_NS}/table_high_cam",
             update_period=0.0666,
-            height=480,
-            width=640,
+            height=256,
+            width=256,
             data_types=["rgb", "semantic_segmentation", "normals"],
             colorize_semantic_segmentation=True,
             semantic_segmentation_mapping=MAPPING,
@@ -320,8 +320,8 @@ class FrankaCubePickPlaceBlueprintEnvCfg(pick_place_joint_pos_env_cfg.FrankaCube
         self.scene.table_side_cam = CameraCfg(
             prim_path="{ENV_REGEX_NS}/table_side_cam",
             update_period=0.0666,
-            height=480,
-            width=640,
+            height=256,
+            width=256,
             data_types=["rgb", "semantic_segmentation", "normals"],
             colorize_semantic_segmentation=True,
             semantic_segmentation_mapping=MAPPING,

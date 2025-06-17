@@ -251,7 +251,7 @@ class TerminationsCfg:
         func=mdp.root_height_below_minimum, params={"minimum_height": -0.05, "asset_cfg": SceneEntityCfg("cube_2")}
     )
 
-    success = DoneTerm(func=mdp.cubes_approached, params={"gripper_open_val": torch.tensor([0.0])})
+    success = DoneTerm(func=mdp.cube_placed, params={"gripper_open_val": torch.tensor([0.0])})
 
 
 @configclass
@@ -262,7 +262,7 @@ class FrankaCubeInferencePickPlaceBlueprintEnvCfg(pick_place_joint_pos_env_cfg.F
         # post init of parent
         super().__post_init__()
 
-        self.episode_length_s = 30
+        self.episode_length_s = 60
 
         # Set Franka as robot
         # We switch here to a stiffer PD controller for IK tracking to be better.

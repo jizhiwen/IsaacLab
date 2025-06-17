@@ -83,7 +83,7 @@ def main():
     modality_transform = data_config.transform()
 
     policy = Gr00tPolicy(
-        model_path="/home/robot/models/pick-place-demo-av1/checkpoint-8000",
+        model_path="/home/robot/models/pick-place-demo-v4-256-256/checkpoint-10000",
         modality_config=modality_config,
         modality_transform=modality_transform,
         embodiment_tag="new_embodiment",
@@ -105,8 +105,9 @@ def main():
                 "state.single_arm": np.degrees(obs['policy']['joint_pos'].cpu().numpy()[:,:6]),
                 "state.gripper": np.array([[1000 - (gripper1+gripper2)/0.08*1000]]),
                 "video.front_view": obs['rgb_camera']['table_high_cam_rgb'].cpu().numpy().astype(np.uint8),
-                "video.right_view": obs['rgb_camera']['table_cam_rgb'].cpu().numpy().astype(np.uint8),
-                "annotation.human.action.task_description": "Pick up the blue square and place it in the box.",
+                "video.side_view": obs['rgb_camera']['table_side_cam_rgb'].cpu().numpy().astype(np.uint8),
+                "video.wrist_view": obs['rgb_camera']['table_cam_rgb'].cpu().numpy().astype(np.uint8),
+                "annotation.human.action.task_description": "Pick up the blue cube and place it in the box.",
             }
 
             action_chunk = policy.get_action(realman_obs)
@@ -133,6 +134,12 @@ def main():
                         print(f"[{success_step_count}/{total_step_count}] Task fail ...")
                         obs, _ = env.reset()
                         break
+
+                if 1000 - (gripper1+gripper2)/0.08*1000 < 10:
+                    total_step_count = total_step_count + 1
+                    print(f"[{success_step_count}/{total_step_count}] Task fail ...")
+                    obs, _ = env.reset()
+                    break
 
 
 if __name__ == "__main__":

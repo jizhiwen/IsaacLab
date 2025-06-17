@@ -15,10 +15,10 @@ import imageio
 import shutil
 import warp as wp
 
-DATASET_PATH = "/mnt/data/datasets/generated_dataset_pick_place_v3_tmp.hdf5"
-IMAGE_PATH = "/mnt/data/datasets/_isaaclab_out_/2025-06-16_15-00-43"
-OUTPUT_DATASET_DIR = "/home/robot/datasets2/lerobot/pick-place-demo-v3-tmp"
-EPISODE_NUM = 99999999999
+DATASET_PATH = "/home/robot/datasets2/generated_dataset_pick_place_v4_256_256.hdf5"
+IMAGE_PATH = "/home/robot/datasets2/_isaaclab_out_/2025-06-16_22-38-47"
+OUTPUT_DATASET_DIR = "/home/robot/datasets2/lerobot/pick-place-demo-v4-256-256"
+EPISODE_NUM = 9999999999
 VIDEO_KEY = "front_view"
 VIDEO_KEY2 = "side_view"
 VIDEO_KEY3 = "wrist_view"
@@ -27,7 +27,7 @@ COMPUTE_STATS = True
 SPLITS = {"train": "0:1"}
 DATA_PATH_TEMPLATE = "data/chunk-{episode_chunk:03d}/episode_{episode_index:06d}.parquet"
 VIDEO_PATH_TEMPLATE = "videos/chunk-{episode_chunk:03d}/{video_key}/episode_{episode_index:06d}.mp4"
-TASK_DESCRIPTION = "Pick up the blue square and place it in the box."
+TASK_DESCRIPTION = "Pick up the blue cube and place it in the box."
 
 # --- Modality Definitions (CRITICAL - Match your actual data) ---
 # State modalities for joints are now discovered automatically from STATE_TOPIC.
@@ -410,21 +410,21 @@ class DatasetFormatter:
                 "dtype": "video",
                 "shape": [video_info["height"], video_info["width"], video_info["channels"]],
                 "names": ["height", "width", "channels"],
-                "info": { "video.fps": round(fps, 2), "video.height": video_info["height"], "video.width": video_info["width"], "video.channels": video_info["channels"], "video.codec": "h264", "video.pix_fmt": "yuv420p", "video.is_depth_map": False, "has_audio": False }
+                "info": { "video.fps": round(fps, 2), "video.height": video_info["height"], "video.width": video_info["width"], "video.channels": video_info["channels"], "video.codec": "av1", "video.pix_fmt": "yuv420p", "video.is_depth_map": False, "has_audio": False }
             }
             video_feature_key2 = f"observation.images.{VIDEO_KEY2}"
             info_config["features"][video_feature_key2] = {
                 "dtype": "video",
                 "shape": [video_info["height"], video_info["width"], video_info["channels"]],
                 "names": ["height", "width", "channels"],
-                "info": { "video.fps": round(fps, 2), "video.height": video_info["height"], "video.width": video_info["width"], "video.channels": video_info["channels"], "video.codec": "h264", "video.pix_fmt": "yuv420p", "video.is_depth_map": False, "has_audio": False }
+                "info": { "video.fps": round(fps, 2), "video.height": video_info["height"], "video.width": video_info["width"], "video.channels": video_info["channels"], "video.codec": "av1", "video.pix_fmt": "yuv420p", "video.is_depth_map": False, "has_audio": False }
             }
             video_feature_key3 = f"observation.images.{VIDEO_KEY3}"
             info_config["features"][video_feature_key3] = {
                 "dtype": "video",
                 "shape": [video_info["height"], video_info["width"], video_info["channels"]],
                 "names": ["height", "width", "channels"],
-                "info": { "video.fps": round(fps, 2), "video.height": video_info["height"], "video.width": video_info["width"], "video.channels": video_info["channels"], "video.codec": "h264", "video.pix_fmt": "yuv420p", "video.is_depth_map": False, "has_audio": False }
+                "info": { "video.fps": round(fps, 2), "video.height": video_info["height"], "video.width": video_info["width"], "video.channels": video_info["channels"], "video.codec": "av1", "video.pix_fmt": "yuv420p", "video.is_depth_map": False, "has_audio": False }
             }
         base_scalar_features = ["timestamp", "frame_index", "episode_index", "index", "task_index", "reward", "next.reward"]
         annotation_features = [f"annotation.{k}" for k in ANNOTATION_KEY_TO_TASK_INDEX.keys()]
@@ -501,7 +501,15 @@ class DatasetFormatter:
                  numpy_frames.append(np.array(frame))
 
             if numpy_frames:
-                imageio.mimwrite(video_filepath, numpy_frames, fps=fps, macro_block_size=16, quality=8)
+                ffmpeg_params = [
+                    '-cpu-used', '8',
+                    '-crf', '30',
+                    '-threads', '0',
+                ]
+                imageio.mimwrite(video_filepath, numpy_frames, fps=fps, macro_block_size=16, quality=8,
+                                codec='libaom-av1',
+                                ffmpeg_params=ffmpeg_params,
+                                )
                 self.logger.info(f"Generated {video_filepath}")
             else:
                 self.logger.warning("No frames collected/converted to write video.")
@@ -697,7 +705,7 @@ def main():
             file_path_rgb = os.path.join(IMAGE_PATH, frame_name_pattern.format(trial_num=episode_index+1, frame_idx=video_start + video_length))
             pil_image = Image.open(file_path_rgb)
             episode_frames_pil.append(pil_image)
-            dataset_formatter.write_parquet(df, episode_index)
+            # dataset_formatter.write_parquet(df, episode_index)
             dataset_formatter.write_video(episode_frames_pil, global_fps, episode_index, video_key=VIDEO_KEY2)
             episode_frames_pil.clear()
 
@@ -713,7 +721,7 @@ def main():
             file_path_rgb = os.path.join(IMAGE_PATH, frame_name_pattern.format(trial_num=episode_index+1, frame_idx=video_start + video_length))
             pil_image = Image.open(file_path_rgb)
             episode_frames_pil.append(pil_image)
-            dataset_formatter.write_parquet(df, episode_index)
+            # dataset_formatter.write_parquet(df, episode_index)
             dataset_formatter.write_video(episode_frames_pil, global_fps, episode_index, video_key=VIDEO_KEY3)
             episode_frames_pil.clear()
 
